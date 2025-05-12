@@ -9,43 +9,51 @@ class HomePage extends StatelessWidget {
     {
       "id": 1,
       "title": "모아나2",
-      "poster": "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg"
+      "poster":
+          "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg",
     },
     {
       "id": 2,
       "title": "쿵푸팬더4",
-      "poster": "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg"
+      "poster":
+          "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg",
     },
     {
       "id": 3,
       "title": "엘리베이션",
-      "poster": "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg"
+      "poster":
+          "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg",
     },
     {
       "id": 3,
       "title": "엘리베이션",
-      "poster": "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg"
+      "poster":
+          "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg",
     },
     {
       "id": 3,
       "title": "엘리베이션",
-      "poster": "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg"
+      "poster":
+          "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg",
     },
     {
       "id": 3,
       "title": "엘리베이션",
-      "poster": "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg"
+      "poster":
+          "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg",
     },
     {
       "id": 3,
       "title": "엘리베이션",
-      "poster": "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg"
+      "poster":
+          "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg",
     },
   ];
 
-
   @override
   Widget build(BuildContext context) {
+    final featuredMovie = dummyMovies[0];
+    final featuredTag = 'movie_featured_${featuredMovie['id']}';
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -62,35 +70,53 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
               const SizedBox(height: 12),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  dummyMovies[0]['poster'],
-                  width: MediaQuery.of(context).size.width - 40, 
-                  height: 600,
-                  fit: BoxFit.cover,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => DetailPage(
+                            movie: featuredMovie,
+                            heroTag: featuredTag,
+                          ),
+                    ),
+                  );
+                },
+                child: Hero(
+                  tag: featuredTag,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      featuredMovie['poster'],
+                      width: MediaQuery.of(context).size.width - 40,
+                      height: 600,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
+
+              // ClipRRect(
+              //   borderRadius: BorderRadius.circular(12),
+              //   child: Image.network(
+              //     dummyMovies[0]['poster'],
+              //     width: MediaQuery.of(context).size.width - 40,
+              //     height: 600,
+              //     fit: BoxFit.cover,
+              //   ),
+              // ),
               const SizedBox(height: 32),
 
               // 리스트뷰 섹션들
-              buildMovieSection(
-                label: "현재 상영중",
-                movies: dummyMovies,
-              ),
+              buildMovieSection(label: "현재 상영중", movies: dummyMovies),
               buildMovieSection(
                 label: "인기순",
                 movies: dummyMovies,
                 showRank: true,
               ),
-              buildMovieSection(
-                label: "평점 높은순",
-                movies: dummyMovies,
-              ),
-              buildMovieSection(
-                label: "개봉 예정",
-                movies: dummyMovies,
-              ),
+              buildMovieSection(label: "평점 높은순", movies: dummyMovies),
+              buildMovieSection(label: "개봉 예정", movies: dummyMovies),
             ],
           ),
         ),

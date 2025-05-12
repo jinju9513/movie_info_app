@@ -3,7 +3,8 @@ import 'package:movie_info_app/presentation/pages/widgets/info_box.dart';
 
 class DetailPage extends StatelessWidget {
   final Map movie;
-  const DetailPage({super.key, required this.movie});
+  final String heroTag;
+  const DetailPage({super.key, required this.movie, required this.heroTag});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class DetailPage extends StatelessWidget {
           children: [
             // 포스터 이미지
             Hero(
-              tag: 'movie_${movie['id']}',
+              tag: heroTag,
               child: Image.network(
                 movie['poster'],
                 width: double.infinity,
@@ -77,10 +78,7 @@ class DetailPage extends StatelessWidget {
                   // 태그라인
                   Text(
                     dummyDetail['tagline'].toString(),
-                    style: const TextStyle(
-                      color: Colors.white60,
-                      fontSize: 16,
-                    ),
+                    style: const TextStyle(color: Colors.white60, fontSize: 16),
                   ),
 
                   const SizedBox(height: 5),
@@ -96,10 +94,34 @@ class DetailPage extends StatelessWidget {
                     color: Colors.white24,
                     margin: const EdgeInsets.symmetric(vertical: 6),
                   ),
-                  Text(
-                    "${(dummyDetail['genres'] as List<String>).join(', ')}",
-                    style: const TextStyle(color: Colors.white),
+                  // Text(
+                  //   "${(dummyDetail['genres'] as List<String>).join(', ')}",
+                  //   style: const TextStyle(color: Colors.white),
+                  // ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children:
+                          (dummyDetail['genres'] as List<String>).map((genre) {
+                            return Container(
+                              margin: const EdgeInsets.only(right: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                genre,
+                                style: const TextStyle(color: Colors.blue),
+                              ),
+                            );
+                          }).toList(),
+                    ),
                   ),
+
                   Container(
                     height: 1,
                     color: Colors.white24,
@@ -188,7 +210,6 @@ class DetailPage extends StatelessWidget {
       ),
     );
   }
-
 
   //천단위 콤마 찍기
   String _formatCurrency(int number) {
