@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:movie_info_app/data/datasoures/movie_data_source_impl.dart';
+import 'package:movie_info_app/data/repositories/movie_repository_impl.dart';
+import 'package:movie_info_app/domain/entities/movie.dart';
+import 'package:movie_info_app/domain/usecases/fetch_movie_detail_usecase.dart';
 import 'package:movie_info_app/presentation/pages/detail_page.dart';
+import 'package:movie_info_app/presentation/viewmodels/movie_detail_view_model.dart';
+import 'package:provider/provider.dart';
 
 Widget buildMovieSection({
   required String label,
-  required List<Map<String, dynamic>> movies,
+  required List<Movie> movies,
   bool showRank = false,
 }) {
   return Column(
@@ -25,7 +31,7 @@ Widget buildMovieSection({
           itemCount: 20, // 20개 출력
           itemBuilder: (context, index) {
             final movie = movies[index % movies.length];
-            final tag = 'movie_${movie['id']}_${label}_$index';
+            final tag = 'movie_${movie.id}_${label}_$index';
 
             return Padding(
               padding: const EdgeInsets.only(right: 12),
@@ -34,7 +40,19 @@ Widget buildMovieSection({
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => DetailPage(movie: movie, heroTag: tag),
+                      builder:
+                          (_) => ChangeNotifierProvider(
+                            create:
+                                (_) => MovieDetailViewModel(
+                                  fetchMovieDetailUseCase:
+                                      FetchMovieDetailUseCase(
+                                        MovieRepositoryImpl(
+                                          MovieDataSourceImpl(),
+                                        ),
+                                      ),
+                                )..fetch(movie.id),
+                            child: DetailPage(movie: movie, heroTag: tag),
+                          ),
                     ),
                   );
                 },
@@ -46,7 +64,7 @@ Widget buildMovieSection({
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.network(
-                          movie['poster'],
+                          movie.posterPath,
                           width: 120,
                           height: 180,
                           fit: BoxFit.cover,
