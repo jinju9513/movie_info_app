@@ -98,7 +98,7 @@ class Genre {
 
 class ProductionCompany {
   int id;
-  String logoPath;
+  String? logoPath;
   String name;
   String originCountry;
 
@@ -112,7 +112,7 @@ class ProductionCompany {
   factory ProductionCompany.fromJson(Map<String, dynamic> json) {
     return ProductionCompany(
       id: json["id"],
-      logoPath: json["logo_path"],
+      logoPath: json["logo_path"] as String?,
       name: json["name"],
       originCountry: json["origin_country"],
     );
