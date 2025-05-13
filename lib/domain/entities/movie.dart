@@ -6,6 +6,6 @@ class Movie {
 
   Movie({
     required this.id,
-    required this.posterPath,
-  });
+    required String posterPath,
+   }) : posterPath = 'https://image.tmdb.org/t/p/w500$posterPath'; 
 }

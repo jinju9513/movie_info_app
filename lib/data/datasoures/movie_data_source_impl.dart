@@ -8,7 +8,7 @@ import 'movie_data_source.dart';
 
 class MovieDataSourceImpl implements MovieDataSource {
   final String _baseUrl = 'https://api.themoviedb.org/3';
-  final String _apiKey = dotenv.env['TMDB_API_KEY']!;
+  String get _apiKey => dotenv.env['TMDB_API_KEY']!;
 
   Future<MovieResponseDto?> _getMovieList(String path) async {
     final uri = Uri.parse('$_baseUrl/$path?api_key=$_apiKey&language=ko-KR&page=1');
