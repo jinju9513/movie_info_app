@@ -1,59 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:movie_info_app/data/datasoures/movie_data_source_impl.dart';
+import 'package:movie_info_app/data/repositories/movie_repository_impl.dart';
+import 'package:movie_info_app/domain/usecases/fetch_movie_detail_usecase.dart';
 import 'package:movie_info_app/presentation/pages/widgets/build_movie_section.dart';
+import 'package:movie_info_app/presentation/viewmodels/movie_detail_view_model.dart';
+import 'package:movie_info_app/presentation/viewmodels/movie_view_model.dart';
+import 'package:provider/provider.dart';
 import 'detail_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  final List<Map<String, dynamic>> dummyMovies = const [
-    {
-      "id": 1,
-      "title": "모아나2",
-      "poster":
-          "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg",
-    },
-    {
-      "id": 2,
-      "title": "쿵푸팬더4",
-      "poster":
-          "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg",
-    },
-    {
-      "id": 3,
-      "title": "엘리베이션",
-      "poster":
-          "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg",
-    },
-    {
-      "id": 3,
-      "title": "엘리베이션",
-      "poster":
-          "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg",
-    },
-    {
-      "id": 3,
-      "title": "엘리베이션",
-      "poster":
-          "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg",
-    },
-    {
-      "id": 3,
-      "title": "엘리베이션",
-      "poster":
-          "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg",
-    },
-    {
-      "id": 3,
-      "title": "엘리베이션",
-      "poster":
-          "https://image.tmdb.org/t/p/w500/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg",
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final featuredMovie = dummyMovies[0];
-    final featuredTag = 'movie_featured_${featuredMovie['id']}';
+    final vm = context.watch<MovieViewModel>();
+    final featuredMovie =
+        vm.popularMovies.isNotEmpty ? vm.popularMovies[0] : null;
+    final featuredTag =
+        featuredMovie != null ? 'movie_featured_${featuredMovie.id}' : '';
+
+    if (featuredMovie == null) {
+      return const Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -72,13 +44,32 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 12),
               GestureDetector(
                 onTap: () {
+                  if (featuredMovie == null) return;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder:
-                          (_) => DetailPage(
-                            movie: featuredMovie,
-                            heroTag: featuredTag,
+                          (_) => ChangeNotifierProvider(
+                            create:
+                                (_) => MovieDetailViewModel(
+                                  fetchMovieDetailUseCase:
+                                      FetchMovieDetailUseCase(
+                                        MovieRepositoryImpl(
+                                          MovieDataSourceImpl(),
+                                        ),
+                                      ),
+                                ),
+                            builder: (context, child) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                context.read<MovieDetailViewModel>().fetch(
+                                  featuredMovie.id,
+                                );
+                              });
+                              return DetailPage(
+                                movie: featuredMovie,
+                                heroTag: featuredTag,
+                              );
+                            },
                           ),
                     ),
                   );
@@ -88,7 +79,7 @@ class HomePage extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
-                      featuredMovie['poster'],
+                      featuredMovie!.posterPath,
                       width: MediaQuery.of(context).size.width - 40,
                       height: 600,
                       fit: BoxFit.cover,
@@ -109,14 +100,14 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 32),
 
               // 리스트뷰 섹션들
-              buildMovieSection(label: "현재 상영중", movies: dummyMovies),
+              buildMovieSection(label: "현재 상영중", movies: vm.nowPlayingMovies),
               buildMovieSection(
                 label: "인기순",
-                movies: dummyMovies,
+                movies: vm.popularMovies,
                 showRank: true,
               ),
-              buildMovieSection(label: "평점 높은순", movies: dummyMovies),
-              buildMovieSection(label: "개봉 예정", movies: dummyMovies),
+              buildMovieSection(label: "평점 높은순", movies: vm.topRatedMovies),
+              buildMovieSection(label: "개봉 예정", movies: vm.upcomingMovies),
             ],
           ),
         ),

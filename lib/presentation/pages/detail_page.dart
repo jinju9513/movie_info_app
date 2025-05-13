@@ -1,31 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:movie_info_app/domain/entities/movie.dart';
 import 'package:movie_info_app/presentation/pages/widgets/info_box.dart';
+import 'package:movie_info_app/presentation/viewmodels/movie_detail_view_model.dart';
+import 'package:provider/provider.dart';
 
-class DetailPage extends StatelessWidget {
-  final Map movie;
+class DetailPage extends StatefulWidget {
+  final Movie movie;
   final String heroTag;
   const DetailPage({super.key, required this.movie, required this.heroTag});
 
   @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<MovieDetailViewModel>().fetch(widget.movie.id);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // TMDB 더미
-    const dummyDetail = {
-      "title": "모아나 2",
-      "releaseDate": "2024-07-01",
-      "tagline": "The ocean is calling her back.",
-      "runtime": "102분",
-      "genres": ["Adventure", "Animation", "Fantasy"],
-      "overview":
-          "In Moana 2, Moana and Maui reunite to travel to the far seas of Oceania and explore dangerous new waters.",
-      "voteAverage": 8.5,
-      "voteCount": 2547,
-      "popularity": 1234.56,
-      "budget": 150000000,
-      "revenue": 500000000,
-      "productionCompanies": [
-        "https://logos-world.net/wp-content/uploads/2021/02/Disney-Logo.png",
-      ],
-    };
+    final vm = context.watch<MovieDetailViewModel>();
+
+    if (vm.isLoading || vm.detail == null) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: Column(
+          children: [
+            Hero(
+              tag: widget.heroTag,
+              child: Image.network(
+                widget.movie.posterPath,
+                width: double.infinity,
+                height: 600,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(height: 20),
+            const CircularProgressIndicator(color: Colors.white),
+          ],
+        ),
+      );
+    }
+
+    final movieDetail = vm.detail!;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -35,9 +58,9 @@ class DetailPage extends StatelessWidget {
           children: [
             // 포스터 이미지
             Hero(
-              tag: heroTag,
+              tag: widget.heroTag,
               child: Image.network(
-                movie['poster'],
+                widget.movie.posterPath,
                 width: double.infinity,
                 height: 600,
                 fit: BoxFit.cover,
@@ -55,7 +78,7 @@ class DetailPage extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          dummyDetail['title'].toString(),
+                          movieDetail.title,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 24,
@@ -64,7 +87,9 @@ class DetailPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        dummyDetail['releaseDate'].toString(),
+                        DateFormat(
+                          'yyyy-MM-dd',
+                        ).format(movieDetail.releaseDate),
                         style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 14,
@@ -77,7 +102,7 @@ class DetailPage extends StatelessWidget {
 
                   // 태그라인
                   Text(
-                    dummyDetail['tagline'].toString(),
+                    movieDetail.tagline,
                     style: const TextStyle(color: Colors.white60, fontSize: 16),
                   ),
 
@@ -85,7 +110,7 @@ class DetailPage extends StatelessWidget {
 
                   // 러닝타임 + 카테고리
                   Text(
-                    "${dummyDetail['runtime']}",
+                    "${movieDetail.runtime}분",
                     style: const TextStyle(color: Colors.white70),
                   ),
                   const SizedBox(height: 6),
@@ -102,7 +127,7 @@ class DetailPage extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children:
-                          (dummyDetail['genres'] as List<String>).map((genre) {
+                          movieDetail.genres.map((genre) {
                             return Container(
                               margin: const EdgeInsets.only(right: 8),
                               padding: const EdgeInsets.symmetric(
@@ -131,7 +156,7 @@ class DetailPage extends StatelessWidget {
 
                   // 영화 설명
                   Text(
-                    dummyDetail['overview'].toString(),
+                    movieDetail.overview,
                     style: const TextStyle(color: Colors.white, fontSize: 15),
                   ),
                   Container(
@@ -155,21 +180,19 @@ class DetailPage extends StatelessWidget {
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: [
-                        infoBox("평점", dummyDetail['voteAverage'].toString()),
-                        infoBox("평점투표 수", dummyDetail['voteCount'].toString()),
+                        infoBox("평점", movieDetail.voteAverage.toString()),
+                        infoBox("평점투표 수", movieDetail.voteCount.toString()),
                         infoBox(
                           "인기점수",
-                          (dummyDetail['popularity'] as double).toStringAsFixed(
-                            1,
-                          ),
+                          movieDetail.popularity.toStringAsFixed(1),
                         ),
                         infoBox(
                           "예산",
-                          "\$${_formatCurrency(dummyDetail['budget'] as int)}",
+                          "\$${_formatCurrency(movieDetail.budget)}",
                         ),
                         infoBox(
                           "수익",
-                          "\$${_formatCurrency(dummyDetail['revenue'] as int)}",
+                          "\$${_formatCurrency(movieDetail.revenue)}",
                         ),
                       ],
                     ),
@@ -181,14 +204,10 @@ class DetailPage extends StatelessWidget {
                     height: 60,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      itemCount:
-                          (dummyDetail['productionCompanies'] as List<String>)
-                              .length,
+                      itemCount: (movieDetail.productionCompanyLogos).length,
                       separatorBuilder: (_, __) => const SizedBox(width: 12),
                       itemBuilder: (context, index) {
-                        final url =
-                            (dummyDetail['productionCompanies']
-                                as List<String>)[index];
+                        final url = (movieDetail.productionCompanyLogos)[index];
                         return Container(
                           decoration: BoxDecoration(
                             color: Color.fromRGBO(255, 255, 255, 0.9),
