@@ -3,6 +3,7 @@ import 'package:movie_info_app/data/datasoures/movie_data_source_impl.dart';
 import 'package:movie_info_app/data/repositories/movie_repository_impl.dart';
 import 'package:movie_info_app/domain/usecases/fetch_movie_detail_usecase.dart';
 import 'package:movie_info_app/presentation/pages/widgets/build_movie_section.dart';
+import 'package:movie_info_app/presentation/pages/widgets/popular_movie_section.dart';
 import 'package:movie_info_app/presentation/viewmodels/movie_detail_view_model.dart';
 import 'package:movie_info_app/presentation/viewmodels/movie_view_model.dart';
 import 'package:provider/provider.dart';
@@ -101,10 +102,9 @@ class HomePage extends StatelessWidget {
 
               // 리스트뷰 섹션들
               buildMovieSection(label: "현재 상영중", movies: vm.nowPlayingMovies),
-              buildMovieSection(
+              PopularMovieSection(
                 label: "인기순",
                 movies: vm.popularMovies,
-                showRank: true,
               ),
               buildMovieSection(label: "평점 높은순", movies: vm.topRatedMovies),
               buildMovieSection(label: "개봉 예정", movies: vm.upcomingMovies),

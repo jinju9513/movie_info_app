@@ -7,11 +7,7 @@ import 'package:movie_info_app/presentation/pages/detail_page.dart';
 import 'package:movie_info_app/presentation/viewmodels/movie_detail_view_model.dart';
 import 'package:provider/provider.dart';
 
-Widget buildMovieSection({
-  required String label,
-  required List<Movie> movies,
-  bool showRank = false,
-}) {
+Widget buildMovieSection({required String label, required List<Movie> movies}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -28,6 +24,7 @@ Widget buildMovieSection({
         height: 180,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.none,
           itemCount: 20, // 20개 출력
           itemBuilder: (context, index) {
             final movie = movies[index % movies.length];
@@ -57,7 +54,7 @@ Widget buildMovieSection({
                   );
                 },
                 child: Stack(
-                  alignment: Alignment.bottomLeft,
+                  clipBehavior: Clip.none, // 바깥 넘치게
                   children: [
                     Hero(
                       tag: tag,
@@ -71,26 +68,6 @@ Widget buildMovieSection({
                         ),
                       ),
                     ),
-                    if (showRank)
-                      Positioned(
-                        bottom: 6,
-                        left: 6,
-                        child: Text(
-                          '${index + 1}',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(
-                                color: Colors.black,
-                                blurRadius: 4,
-                                offset: Offset(1, 1),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),
