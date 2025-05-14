@@ -7,12 +7,15 @@ import 'package:movie_info_app/data/models/movie_response_dto.dart';
 import 'movie_data_source.dart';
 
 class MovieDataSourceImpl implements MovieDataSource {
+  final http.Client _client;
   final String _baseUrl = 'https://api.themoviedb.org/3';
   String get _apiKey => dotenv.env['TMDB_API_KEY']!;
 
+  MovieDataSourceImpl([http.Client? client]) : _client = client ?? http.Client();
+
   Future<MovieResponseDto?> _getMovieList(String path) async {
     final uri = Uri.parse('$_baseUrl/$path?api_key=$_apiKey&language=ko-KR&page=1');
-    final response = await http.get(uri);
+    final response = await _client.get(uri);
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
