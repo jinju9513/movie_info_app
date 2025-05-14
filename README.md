@@ -6,7 +6,7 @@ Flutter 클린 아키텍쳐 및 Provider 패턴으로 구성되어 있고, 테�
 
 ## 📱 데모 영상
 
-<img src="assets/movie_info_demo.gif" width="360" />
+<img src="https://github.com/user-attachments/assets/c75bd0a1-f719-427f-9125-b838640730f3" width="360" />
 
 ## 📦 주요 기능
 
@@ -22,19 +22,49 @@ Flutter 클린 아키텍쳐 및 Provider 패턴으로 구성되어 있고, 테�
 
 ```
 lib/
+├── assets/
 ├── data/
-│   ├── datasources/
-│   ├── models/
-│   └── repositories/
+│ ├── datasources/
+│ │ ├── movie_data_source.dart
+│ │ └── movie_data_source_impl.dart
+│ ├── mapper/
+│ │ ├── movie_detail_dto_to_entity.dart
+│ │ └── result_to_entity.dart
+│ ├── models/
+│ │ ├── movie_detail_dto.dart
+│ │ └── movie_response_dto.dart
+│ └── repositories/
+│ ├── movie_repository.dart
+│ └── movie_repository_impl.dart
 ├── domain/
-│   ├── entities/
-│   ├── repositories/
-│   └── usecases/
+│ ├── entities/
+│ │ ├── movie.dart
+│ │ └── movie_detail.dart
+│ └── usecases/
+│ ├── fetch_movie_detail_usecase.dart
+│ ├── fetch_now_playing_movies_usecase.dart
+│ ├── fetch_popular_movies_usecase.dart
+│ ├── fetch_top_rated_movies_usecase.dart
+│ └── fetch_upcoming_movies_usecase.dart
 ├── presentation/
-│   ├── pages/
-│   ├── viewmodels/
-│   └── widgets/
-└── main.dart
+│ ├── pages/
+│ │ ├── detail_page.dart
+│ │ ├── home_page.dart
+│ │ └── widgets/
+│ │     ├── build_movie_section.dart
+│ │     ├── info_box.dart
+│ │     └── popular_movie_section.dart
+│ └── viewmodels/
+│ ├── movie_detail_view_model.dart
+│ └── movie_view_model.dart
+├── main.dart
+test/
+└── data/
+├── datasources/
+│ └── movie_data_source_impl_test.dart
+└── models/
+├── movie_detail_dto_test.dart
+└── movie_response_dto_test.dart
 ```
 
 > ✅ 클린 아키텍쳐 기반으로 계층 분리
@@ -70,9 +100,10 @@ TMDB_API_KEY=your_api_key_here
 ## 📸 UI 스크립샵
 
 | 홈화면                             | 상세화면                              |
-| ------------------------------- | --------------------------------- |
-| ![](assets/screenshot_home.png) | ![](assets/screenshot_detail.png) |
-
+<div align="center" style="display: flex; flex-wrap: nowrap; overflow-x: auto; padding: 15px;">
+<img src="https://github.com/user-attachments/assets/32412e0b-b38d-4f7a-9966-e44ba113f8e3" width="360" />
+<img src="https://github.com/user-attachments/assets/bce35a37-cc5a-42a6-9714-a997a1515237" width="360" />
+</div>
 ## 📁 실행 방법
 
 ```bash
