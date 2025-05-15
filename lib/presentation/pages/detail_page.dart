@@ -119,10 +119,6 @@ class _DetailPageState extends State<DetailPage> {
                     color: Colors.white24,
                     margin: const EdgeInsets.symmetric(vertical: 6),
                   ),
-                  // Text(
-                  //   "${(dummyDetail['genres'] as List<String>).join(', ')}",
-                  //   style: const TextStyle(color: Colors.white),
-                  // ),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -152,7 +148,6 @@ class _DetailPageState extends State<DetailPage> {
                     color: Colors.white24,
                     margin: const EdgeInsets.symmetric(vertical: 6),
                   ),
-                  // const SizedBox(height: 10),
 
                   // 영화 설명
                   Text(

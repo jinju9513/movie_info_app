@@ -89,23 +89,11 @@ class HomePage extends StatelessWidget {
                 ),
               ),
 
-              // ClipRRect(
-              //   borderRadius: BorderRadius.circular(12),
-              //   child: Image.network(
-              //     dummyMovies[0]['poster'],
-              //     width: MediaQuery.of(context).size.width - 40,
-              //     height: 600,
-              //     fit: BoxFit.cover,
-              //   ),
-              // ),
               const SizedBox(height: 32),
 
               // 리스트뷰 섹션들
               buildMovieSection(label: "현재 상영중", movies: vm.nowPlayingMovies),
-              PopularMovieSection(
-                label: "인기순",
-                movies: vm.popularMovies,
-              ),
+              popularMovieSection(label: "인기순", movies: vm.popularMovies),
               buildMovieSection(label: "평점 높은순", movies: vm.topRatedMovies),
               buildMovieSection(label: "개봉 예정", movies: vm.upcomingMovies),
             ],

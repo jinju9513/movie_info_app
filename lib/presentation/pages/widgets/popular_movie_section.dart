@@ -7,7 +7,7 @@ import 'package:movie_info_app/presentation/pages/detail_page.dart';
 import 'package:movie_info_app/presentation/viewmodels/movie_detail_view_model.dart';
 import 'package:provider/provider.dart';
 
-Widget PopularMovieSection({
+Widget popularMovieSection({
   required String label,
   required List<Movie> movies,
 }) {
