@@ -107,7 +107,7 @@ TMDB_API_KEY=your_api_key_here
 ## 📁 실행 방법
 
 ```bash
-git clone https://github.com/your-username/movie_info_app.git
+git clone https://github.com/jinju9513/movie_info_app.git
 cd movie_info_app
 flutter pub get
 flutter run
